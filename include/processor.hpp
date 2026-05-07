@@ -4,9 +4,9 @@
 #include <string>
 
 #include "process_session.hpp"
+#include "process_context.hpp"
 
 namespace nanofi {
-    class ProcessContext;
     class ProcessSessionFactory;
 
 	class Processor {
