@@ -7,8 +7,8 @@ namespace nanofi {
 	class FlowFile {
 	public:
         FlowFile(const std::string& id);
-        FlowFile(const FlowFile& other) = default;
-        FlowFile& operator=(const FlowFile& other) = default;
+        FlowFile(const FlowFile& other) = delete;
+        FlowFile& operator=(const FlowFile& other) = delete;
         FlowFile(FlowFile&& other) = default;
         FlowFile& operator=(FlowFile&& other) = default;
         
