@@ -9,7 +9,6 @@
 using namespace nanofi;
 
 namespace nanofi {
-    class ProcessContext {};
     class ProcessSessionFactory {};
 }
 
