@@ -2,10 +2,12 @@
 #define	PROCESSOR_HPP
 
 #include <string>
+
+#include "process_session.hpp"
+
 namespace nanofi {
     class ProcessContext;
     class ProcessSessionFactory;
-    class ProcessSession;
 
 	class Processor {
 	public:

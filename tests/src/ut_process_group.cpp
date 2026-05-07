@@ -18,6 +18,9 @@ public:
     void on_trigger(const ProcessContext& context, ProcessSession *session) override {
         throw std::runtime_error("NOT IMPLEMENTED");
     }
+    std::string id() const override {
+        return "test_processor";
+    }
 };
 
 TEST(ut_process_group, process_group_sanity) {

@@ -20,8 +20,8 @@ namespace nanofi {
         void add_processor(std::unique_ptr<Processor>&& processor) {
             m_processors.emplace_back(std::move(processor));
         }
-        void add_connection(const Connection& connection) {
-            m_connections.emplace_back(connection);
+        void add_connection(Connection&& connection) {
+            m_connections.emplace_back(std::move(connection));
         }
 	private:
         std::vector<std::unique_ptr<Processor>> m_processors;

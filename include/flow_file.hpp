@@ -6,7 +6,9 @@
 namespace nanofi {
 	class FlowFile {
 	public:
-        FlowFile(const std::string& id);
+        FlowFile(const std::string& id): m_id(id) {
+
+        }
         FlowFile(const FlowFile& other) = delete;
         FlowFile& operator=(const FlowFile& other) = delete;
         FlowFile(FlowFile&& other) = default;
@@ -14,7 +16,9 @@ namespace nanofi {
         
         virtual ~FlowFile() noexcept = default;
         
-        const std::string& id() const;
+        const std::string& id() const {
+            return m_id;
+        }
     private:
         std::string m_id;
     };
