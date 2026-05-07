@@ -9,6 +9,13 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 add_library(processor INTERFACE)
 target_include_directories(processor INTERFACE ${CMAKE_CURRENT_LIST_DIR}/include)
 
+add_library(connection INTERFACE)
+target_include_directories(connection INTERFACE ${CMAKE_CURRENT_LIST_DIR}/include)
+
+add_library(process_group INTERFACE)
+target_include_directories(process_group INTERFACE ${CMAKE_CURRENT_LIST_DIR}/include)
+target_link_libraries(process_group INTERFACE processor connection)
+
 include(FetchContent)
 option(NANOFI_TESTS "Build the project's test suite" ON)
 if(NANOFI_TESTS)
