@@ -1,6 +1,7 @@
 #ifndef	PROCESSOR_HPP
 #define	PROCESSOR_HPP
 
+#include <string>
 namespace nanofi {
     class ProcessContext;
     class ProcessSessionFactory;
@@ -12,6 +13,7 @@ namespace nanofi {
         virtual void on_schedule(const ProcessContext& context, const ProcessSessionFactory& session_factory) = 0;
         virtual void on_unschedule() = 0;
         virtual void on_trigger(const ProcessContext& context, ProcessSession *session) = 0;
+        virtual std::string id() const = 0;
 	};
 }
 
