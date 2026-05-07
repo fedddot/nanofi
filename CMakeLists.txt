@@ -28,6 +28,13 @@ if(NANOFI_TESTS)
     enable_testing()
 endif()
 
+FetchContent_Declare(
+    fatfs
+    GIT_REPOSITORY  https://github.com/abbrev/fatfs.git
+    GIT_TAG         R0.16
+)
+FetchContent_MakeAvailable(fatfs)
+
 if (NANOFI_TESTS)
     add_subdirectory(tests)
 endif()
