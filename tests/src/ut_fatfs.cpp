@@ -4,6 +4,7 @@
 #include <cstring>
 #include <map>
 
+#include "custom_ffconf.h"
 #include "ff.h"
 #include "diskio.h"
 
