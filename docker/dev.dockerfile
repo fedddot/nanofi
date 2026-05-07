@@ -10,7 +10,7 @@ ARG UID=1000
 ARG GID=1000
 
 RUN addgroup -g ${GID} developer
-RUN adduser -D -u ${UID} -G developer -s /bin/bash -d /home/developer developer
+RUN adduser -D -u ${UID} -G developer -s /bin/bash developer
 
 ENV SHELL=bash
 
