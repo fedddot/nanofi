@@ -1,6 +1,5 @@
 #include <array>
 #include <cstring>
-#include <map>
 
 #include "gtest/gtest.h"
 
@@ -12,7 +11,7 @@
 #define SECTOR_COUNT 2048UL
 #define DISK_SIZE (BLOCK_SIZE * SECTOR_COUNT)
 
-std::map<BYTE, std::array<char, DISK_SIZE>> g_disks;
+std::array<char, DISK_SIZE> g_disk;
 
 TEST(ut_fatfs, fatfs_sanity) {
     const TCHAR *fs_path = "";
@@ -63,28 +62,22 @@ DRESULT disk_ioctl(BYTE pdrv, BYTE cmd, void* buff) {
 }
 
 DSTATUS disk_initialize(BYTE pdrv) {
-    if (g_disks.find(pdrv) == g_disks.end()) {
-        g_disks[pdrv] = std::array<char, DISK_SIZE>();
-    }
     return 0;
 }
 
 DSTATUS disk_status(BYTE pdrv) {
-    if (g_disks.find(pdrv) == g_disks.end()) {
-        return STA_NOINIT;
-    }
     return 0;
 }
 
 DRESULT disk_read(BYTE pdrv, BYTE* buff, LBA_t sector, UINT count) {
     enum { SECTOR_SIZE = 512 };
-    std::memcpy(buff, g_disks[pdrv].data() + sector * SECTOR_SIZE, count * SECTOR_SIZE);
+    std::memcpy(buff, g_disk.data() + sector * SECTOR_SIZE, count * SECTOR_SIZE);
     return DRESULT::RES_OK;
 }
 
 DRESULT disk_write(BYTE pdrv, const BYTE* buff, LBA_t sector, UINT count) {
     enum { SECTOR_SIZE = 512 };
-    std::memcpy(g_disks[pdrv].data() + sector * SECTOR_SIZE, buff, count * SECTOR_SIZE);
+    std::memcpy(g_disk.data() + sector * SECTOR_SIZE, buff, count * SECTOR_SIZE);
     return DRESULT::RES_OK;
 }
 
