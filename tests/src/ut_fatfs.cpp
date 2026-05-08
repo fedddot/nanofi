@@ -13,8 +13,8 @@ TEST(ut_fatfs, fatfs_sanity) {
     MKFS_PARM mkfs_parm = {
         .fmt = FM_FAT32,
         .n_fat = 1,
-        .align = 0,
-        .n_root = 0,
+        .align = 1,
+        .n_root = 16,
         .au_size = 4096
     };
     std::array<BYTE, FF_MAX_SS> work;
@@ -27,12 +27,12 @@ TEST(ut_fatfs, fatfs_sanity) {
     ASSERT_EQ(FRESULT::FR_OK, fs_result);
     
     FIL file; 
-    const auto file_path = "/test.txt";
+    const auto file_path = "/dev/sd0/test.txt";
     fs_result = f_open(&file, file_path, FA_WRITE | FA_CREATE_ALWAYS);
     ASSERT_EQ(FRESULT::FR_OK, fs_result);
 }
 
-const std::size_t g_disk_size = 1024 * 1024 * 1024; // 1GB
+const std::size_t g_disk_size = 1024 * 1024; // 1MB
 std::map<BYTE, std::array<char, g_disk_size>> g_disks;
 
 DSTATUS disk_initialize(BYTE pdrv) {
@@ -60,7 +60,18 @@ DRESULT disk_write(BYTE pdrv, const BYTE* buff, LBA_t sector, UINT count) {
 }
 
 DRESULT disk_ioctl(BYTE pdrv, BYTE cmd, void* buff) {
-    return DRESULT::RES_ERROR;
+    switch (cmd) {
+    case GET_BLOCK_SIZE:
+        *(DWORD*)buff = 512;
+        return DRESULT::RES_OK;
+    case GET_SECTOR_COUNT:
+        *(WORD*)buff = (WORD)2048;
+        return DRESULT::RES_OK;
+    case CTRL_SYNC:
+        return DRESULT::RES_OK;
+    default:
+        return DRESULT::RES_ERROR;
+    }
 }
 
 DWORD get_fattime(void) {
