@@ -44,6 +44,9 @@ TEST(ut_fatfs, fatfs_sanity) {
 
     fs_result = f_close(&file);
     ASSERT_EQ(FRESULT::FR_OK, fs_result);
+
+    fs_result = f_unmount(fs_path);
+    ASSERT_EQ(FRESULT::FR_OK, fs_result);
 }
 
 DRESULT disk_ioctl(BYTE pdrv, BYTE cmd, void* buff) {
