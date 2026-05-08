@@ -8,15 +8,21 @@
 #include "ff.h"
 #include "diskio.h"
 
+#define BLOCK_SIZE 512UL
+#define SECTOR_COUNT 2048UL
+#define DISK_SIZE (BLOCK_SIZE * SECTOR_COUNT)
+
+std::map<BYTE, std::array<char, DISK_SIZE>> g_disks;
+
 TEST(ut_fatfs, fatfs_sanity) {
     const TCHAR *fs_path = "";
-    MKFS_PARM mkfs_parm = {
-        .fmt = FM_FAT32,
-        .n_fat = 1,
-        .align = 1,
-        .n_root = 16,
-        .au_size = 4096
-    };
+    // MKFS_PARM mkfs_parm = {
+    //     .fmt = FM_FAT32,
+    //     .n_fat = 1,
+    //     .align = 1,
+    //     .n_root = 16,
+    //     .au_size = 4096
+    // };
     std::array<BYTE, FF_MAX_SS> work;
 
     auto fs_result = f_mkfs(fs_path, nullptr, (void *)work.data(), (UINT)work.size());
@@ -30,13 +36,16 @@ TEST(ut_fatfs, fatfs_sanity) {
     const auto file_path = "test.txt";
     fs_result = f_open(&file, file_path, FA_WRITE | FA_CREATE_NEW);
     ASSERT_EQ(FRESULT::FR_OK, fs_result);
+
+    const auto data = "Hello, world!";
+    UINT bytes_written;
+    fs_result = f_write(&file, data, std::strlen(data), &bytes_written);
+    ASSERT_EQ(FRESULT::FR_OK, fs_result);
+    ASSERT_EQ(std::strlen(data), bytes_written);
+
+    fs_result = f_close(&file);
+    ASSERT_EQ(FRESULT::FR_OK, fs_result);
 }
-
-#define BLOCK_SIZE 512UL
-#define SECTOR_COUNT 2048UL
-#define DISK_SIZE (BLOCK_SIZE * SECTOR_COUNT)
-
-std::map<BYTE, std::array<char, DISK_SIZE>> g_disks;
 
 DRESULT disk_ioctl(BYTE pdrv, BYTE cmd, void* buff) {
     switch (cmd) {
