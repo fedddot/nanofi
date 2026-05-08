@@ -54,7 +54,9 @@ DRESULT disk_ioctl(BYTE pdrv, BYTE cmd, void* buff) {
 }
 
 DSTATUS disk_initialize(BYTE pdrv) {
-    g_disks[pdrv] = std::array<char, DISK_SIZE>();
+    if (g_disks.find(pdrv) == g_disks.end()) {
+        g_disks[pdrv] = std::array<char, DISK_SIZE>();
+    }
     return 0;
 }
 
