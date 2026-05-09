@@ -1,3 +1,10 @@
+FetchContent_Declare(
+    fatfs
+    GIT_REPOSITORY  https://github.com/abbrev/fatfs.git
+    GIT_TAG         R0.16
+)
+FetchContent_MakeAvailable(fatfs)
+
 add_library(ff INTERFACE)
 target_sources(ff INTERFACE ${fatfs_SOURCE_DIR}/source/ff.c)
 target_include_directories(ff INTERFACE ${fatfs_SOURCE_DIR}/source)

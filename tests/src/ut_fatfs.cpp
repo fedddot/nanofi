@@ -8,33 +8,37 @@
 #include "ff.h"
 #include "diskio.h"
 
-#define BLOCK_SIZE 512UL
-#define SECTOR_COUNT 2048UL
+#define BLOCK_SIZE 0x200UL
+#define SECTOR_COUNT 0x800UL
 #define DISK_SIZE (BLOCK_SIZE * SECTOR_COUNT)
 
 std::array<char, DISK_SIZE> g_disk;
 
 TEST(ut_fatfs, fatfs_sanity) {
-    const TCHAR *fs_path = "";
+    const auto fs_path = "0";
     MKFS_PARM mkfs_parm = {
-        .fmt = FM_FAT32,
+        .fmt = FM_FAT,
         .n_fat = 1
     };
     std::array<BYTE, FF_MAX_SS> work;
 
-    auto fs_result = f_mkfs(fs_path, &mkfs_parm, (void *)work.data(), (UINT)work.size());
+    auto fs_result = f_mkfs(fs_path, &mkfs_parm, work.data(), work.size());
     ASSERT_EQ(FRESULT::FR_OK, fs_result);
     
     FATFS fs;
     fs_result = f_mount(&fs, fs_path, 0);
     ASSERT_EQ(FRESULT::FR_OK, fs_result);
+
+    const auto dir_path = "work_dir";
+    fs_result = f_mkdir(dir_path);
+    ASSERT_EQ(FRESULT::FR_OK, fs_result);
     
     FIL file; 
-    const auto file_path = "test.txt";
+    const auto file_path = "work_dir/test.txt";
     fs_result = f_open(&file, file_path, FA_WRITE | FA_CREATE_NEW);
     ASSERT_EQ(FRESULT::FR_OK, fs_result);
 
-    const auto data = "Hello, world!";
+    const auto data = "UPDATED_FILE";
     UINT bytes_written;
     fs_result = f_write(&file, data, std::strlen(data), &bytes_written);
     ASSERT_EQ(FRESULT::FR_OK, fs_result);
