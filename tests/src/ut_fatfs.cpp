@@ -1,5 +1,6 @@
 #include <array>
 #include <cstring>
+#include <fstream>
 
 #include "gtest/gtest.h"
 
@@ -15,16 +16,13 @@ std::array<char, DISK_SIZE> g_disk;
 
 TEST(ut_fatfs, fatfs_sanity) {
     const TCHAR *fs_path = "";
-    // MKFS_PARM mkfs_parm = {
-    //     .fmt = FM_FAT32,
-    //     .n_fat = 1,
-    //     .align = 1,
-    //     .n_root = 16,
-    //     .au_size = 4096
-    // };
+    MKFS_PARM mkfs_parm = {
+        .fmt = FM_FAT32,
+        .n_fat = 1
+    };
     std::array<BYTE, FF_MAX_SS> work;
 
-    auto fs_result = f_mkfs(fs_path, nullptr, (void *)work.data(), (UINT)work.size());
+    auto fs_result = f_mkfs(fs_path, &mkfs_parm, (void *)work.data(), (UINT)work.size());
     ASSERT_EQ(FRESULT::FR_OK, fs_result);
     
     FATFS fs;
@@ -44,9 +42,14 @@ TEST(ut_fatfs, fatfs_sanity) {
 
     fs_result = f_close(&file);
     ASSERT_EQ(FRESULT::FR_OK, fs_result);
-
+    
     fs_result = f_unmount(fs_path);
     ASSERT_EQ(FRESULT::FR_OK, fs_result);
+
+    std::ofstream disk_image("disk.img", std::ios::binary);
+    ASSERT_TRUE(disk_image.is_open());
+    disk_image.write(g_disk.data(), g_disk.size());
+    ASSERT_TRUE(disk_image.good());
 }
 
 DRESULT disk_ioctl(BYTE pdrv, BYTE cmd, void* buff) {
